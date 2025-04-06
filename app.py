@@ -143,7 +143,10 @@ if uploaded_files and actualizar:
     pdf.set_font("Arial", size=10)
     for i in range(len(df_export)):
         row = df_export.iloc[i]
-        pdf.multi_cell(0, 8, f"{row['Archivo']}\n-> Distancia: {row['Distancia Euclidiana']:.2f} | Coseno: {row['Similitud de Coseno']:.3f}\n→ {row['Interpretación']}\n")
+        pdf.multi_cell(0, 8, f"{row['Archivo']}
+-> Distancia: {row['Distancia Euclidiana']:.2f} | Coseno: {row['Similitud de Coseno']:.3f}
+Interpretación: {row['Interpretación']}
+")
 
     pdf.ln(5)
     pdf.set_font("Arial", "B", 11)
