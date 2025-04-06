@@ -111,17 +111,6 @@ if uploaded_files and actualizar:
     st.dataframe(df_resumen, use_container_width=True)
 
     # === Cálculo ===
-    st.markdown("""
-    #### 🧠 Interpretación automática
-    - **Distancia Euclidiana**:
-      - < 3: Muy similar al patrón
-      - 3–6: Moderadamente diferente
-      - > 6: Diferencia significativa
-    - **Similitud de Coseno**:
-      - > 0.9: Forma prácticamente idéntica
-      - 0.7–0.9: Forma parecida
-      - < 0.7: Forma distinta o alterada
-    """)
 
     distancias = []
     similitudes = []
