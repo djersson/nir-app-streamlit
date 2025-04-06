@@ -126,7 +126,7 @@ if uploaded_files and actualizar:
     # === PDF ===
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 20)
+    pdf.set_font("helvetica", "B", 20)
     pdf.ln(80)
     pdf.cell(0, 15, "Reporte de Espectroscopía NIR", ln=True, align="C")
     pdf.set_font("Arial", size=14)
