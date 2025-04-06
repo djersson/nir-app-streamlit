@@ -13,7 +13,7 @@ from io import BytesIO
 import tempfile
 
 st.set_page_config(page_title="Análisis NIR - Laboratorio Metalúrgico", layout="wide")
-st.title("🔬 Análisis de Reactivos por Espectroscopía NIR")
+st.title("🔬 Análisis de Resultados por Espectroscopía NIR")
 st.markdown("""
 **Laboratorio Metalúrgico - Minera Chinalco Perú (2025)**  
 Desarrollador: Jersson Dávila R.
