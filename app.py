@@ -146,8 +146,66 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.subheader("📏 Resultados e interpretación")
-    st.dataframe(df_export, use_container_width=True)
+    st.markdown("""
+---
+
+```
+==== DISTANCIA EUCLIDIANA RESPECTO AL PATRÓN ====
+```
+""")
+st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
+
+st.markdown("""
+```
+==== SIMILITUD DE COSENO RESPECTO AL PATRÓN ====
+```
+""")
+st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
+
+st.markdown("""
+```
+==== INTERPRETACIÓN AUTOMÁTICA ====
+""")
+for i in range(len(df_export)):
+    archivo = df_export.iloc[i]["Archivo"]
+    dist = df_export.iloc[i]["Distancia Euclidiana"]
+    cos = df_export.iloc[i]["Similitud de Coseno"]
+    # Evaluación por distancia
+    if dist < 3:
+        nivel_dist = "✅ Muy similar al patrón"
+    elif dist < 6:
+        nivel_dist = "🟡 Moderadamente diferente"
+    else:
+        nivel_dist = "🔴 Muy diferente"
+    # Evaluación por coseno
+    if cos > 0.9:
+        nivel_cos = "✅ Forma prácticamente idéntica"
+    elif cos > 0.7:
+        nivel_cos = "🟡 Forma parecida"
+    else:
+        nivel_cos = "🔴 Forma distinta o alterada"
+    st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
+
+st.markdown("""
+---
+```
+==== RECOMENDACIONES ====
+- Si la distancia euclidiana > 6, considerar acción correctiva.
+- Si la similitud de coseno < 0.5, la forma del espectro cambió significativamente.
+- Revisar condiciones de muestreo, dilución o contaminación del reactivo.
+
+==== LEYENDA PARA INTERPRETACIÓN ====
+
+Distancia Euclidiana:
+- < 3 : Muy similar al patrón
+- 3–6 : Moderadamente diferente
+- > 6 : Diferencia significativa
+
+Similitud de Coseno:
+- > 0.9 : Forma prácticamente idéntica
+- 0.7–0.9 : Forma parecida
+- < 0.7 : Forma distinta o alterada
+```""")
 
     
         
