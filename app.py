@@ -8,9 +8,6 @@ from scipy.signal import savgol_filter
 from scipy.spatial import ConvexHull
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import datetime
-from fpdf import FPDF
-from io import BytesIO
-import tempfile
 
 st.set_page_config(page_title="Análisis NIR - Laboratorio Metalúrgico", layout="wide")
 st.title("🔬 Análisis de resultados por Espectroscopía NIR")
@@ -102,19 +99,18 @@ if uploaded_files and actualizar:
     # === Tabla resumen de espectros ===
     st.subheader("📋 Tabla resumen de archivos cargados")
     df_resumen = pd.DataFrame([
-    {
-        "Archivo": s["nombre"],
-        "# Puntos espectrales": s["num_puntos"],
-        "Long. de onda inicial (nm)": s["inicio"],
-        "Long. de onda final (nm)": s["final"],
-        "Rango espectral (nm)": s["rango"],
-        "Resolución estimada (nm/punto)": s["resolucion"]
-    }
-    for s in spectra_data
-])
+        {
+            "Archivo": s["nombre"],
+            "# Puntos espectrales": s["num_puntos"],
+            "Long. de onda inicial (nm)": s["inicio"],
+            "Long. de onda final (nm)": s["final"],
+            "Rango espectral (nm)": s["rango"],
+            "Resolución estimada (nm/punto)": s["resolucion"]
+        } for s in spectra_data
+    ])
     st.dataframe(df_resumen, use_container_width=True)
 
-# === Cálculo ===
+    # === Cálculo ===
     st.markdown("""
     #### 🧠 Interpretación automática
     - **Distancia Euclidiana**:
@@ -126,6 +122,7 @@ if uploaded_files and actualizar:
       - 0.7–0.9: Forma parecida
       - < 0.7: Forma distinta o alterada
     """)
+
     distancias = []
     similitudes = []
     interpretaciones = []
@@ -147,68 +144,65 @@ if uploaded_files and actualizar:
     })
 
     st.markdown("""
----
-
-```
-==== DISTANCIA EUCLIDIANA RESPECTO AL PATRÓN ====
-```
-""")
+    ---
+    ```
+    ==== DISTANCIA EUCLIDIANA RESPECTO AL PATRÓN ====
+    ```
+    """)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
-st.markdown("""
-```
-==== SIMILITUD DE COSENO RESPECTO AL PATRÓN ====
-```
-""")
+    st.markdown("""
+    ```
+    ==== SIMILITUD DE COSENO RESPECTO AL PATRÓN ====
+    ```
+    """)
     st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
-st.markdown("""
-```
-==== INTERPRETACIÓN AUTOMÁTICA ====
-""")
+    st.markdown("""
+    ```
+    ==== INTERPRETACIÓN AUTOMÁTICA ====
+    """)
     for i in range(len(df_export)):
-    archivo = df_export.iloc[i]["Archivo"]
-    dist = df_export.iloc[i]["Distancia Euclidiana"]
-    cos = df_export.iloc[i]["Similitud de Coseno"]
-    # Evaluación por distancia
-    if dist < 3:
-        nivel_dist = "✅ Muy similar al patrón"
-    elif dist < 6:
-        nivel_dist = "🟡 Moderadamente diferente"
-    else:
-        nivel_dist = "🔴 Muy diferente"
-    # Evaluación por coseno
-    if cos > 0.9:
-        nivel_cos = "✅ Forma prácticamente idéntica"
-    elif cos > 0.7:
-        nivel_cos = "🟡 Forma parecida"
-    else:
-        nivel_cos = "🔴 Forma distinta o alterada"
-            st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
+        archivo = df_export.iloc[i]["Archivo"]
+        dist = df_export.iloc[i]["Distancia Euclidiana"]
+        cos = df_export.iloc[i]["Similitud de Coseno"]
+
+        if dist < 3:
+            nivel_dist = "✅ Muy similar al patrón"
+        elif dist < 6:
+            nivel_dist = "🟡 Moderadamente diferente"
+        else:
+            nivel_dist = "🔴 Muy diferente"
+
+        if cos > 0.9:
+            nivel_cos = "✅ Forma prácticamente idéntica"
+        elif cos > 0.7:
+            nivel_cos = "🟡 Forma parecida"
+        else:
+            nivel_cos = "🔴 Forma distinta o alterada"
+
+        st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
 
     st.markdown("""
----
-```
-==== RECOMENDACIONES ====
-- Si la distancia euclidiana > 6, considerar acción correctiva.
-- Si la similitud de coseno < 0.5, la forma del espectro cambió significativamente.
-- Revisar condiciones de muestreo, dilución o contaminación del reactivo.
+    ---
+    ```
+    ==== RECOMENDACIONES ====
+    - Si la distancia euclidiana > 6, considerar acción correctiva.
+    - Si la similitud de coseno < 0.5, la forma del espectro cambió significativamente.
+    - Revisar condiciones de muestreo, dilución o contaminación del reactivo.
 
-==== LEYENDA PARA INTERPRETACIÓN ====
+    ==== LEYENDA PARA INTERPRETACIÓN ====
 
-Distancia Euclidiana:
-- < 3 : Muy similar al patrón
-- 3–6 : Moderadamente diferente
-- > 6 : Diferencia significativa
+    Distancia Euclidiana:
+    - < 3 : Muy similar al patrón
+    - 3–6 : Moderadamente diferente
+    - > 6 : Diferencia significativa
 
-Similitud de Coseno:
-- > 0.9 : Forma prácticamente idéntica
-- 0.7–0.9 : Forma parecida
-- < 0.7 : Forma distinta o alterada
-```""")
-
-    
-        
+    Similitud de Coseno:
+    - > 0.9 : Forma prácticamente idéntica
+    - 0.7–0.9 : Forma parecida
+    - < 0.7 : Forma distinta o alterada
+    ```""")
 else:
     st.info("Sube archivos .asd para procesarlos.")
 
