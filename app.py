@@ -153,20 +153,20 @@ if uploaded_files and actualizar:
 ==== DISTANCIA EUCLIDIANA RESPECTO AL PATRÓN ====
 ```
 """)
-st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
 st.markdown("""
 ```
 ==== SIMILITUD DE COSENO RESPECTO AL PATRÓN ====
 ```
 """)
-st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
 st.markdown("""
 ```
 ==== INTERPRETACIÓN AUTOMÁTICA ====
 """)
-for i in range(len(df_export)):
+    for i in range(len(df_export)):
     archivo = df_export.iloc[i]["Archivo"]
     dist = df_export.iloc[i]["Distancia Euclidiana"]
     cos = df_export.iloc[i]["Similitud de Coseno"]
@@ -184,9 +184,9 @@ for i in range(len(df_export)):
         nivel_cos = "🟡 Forma parecida"
     else:
         nivel_cos = "🔴 Forma distinta o alterada"
-    st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
+            st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
 
-st.markdown("""
+    st.markdown("""
 ---
 ```
 ==== RECOMENDACIONES ====
@@ -211,3 +211,4 @@ Similitud de Coseno:
         
 else:
     st.info("Sube archivos .asd para procesarlos.")
+
