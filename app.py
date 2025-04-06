@@ -108,7 +108,7 @@ if uploaded_files and actualizar:
         if s["nombre"] != patron["nombre"]:
             d = np.linalg.norm(patron["suavizado"] - s["suavizado"])
             c = cosine_similarity([patron["suavizado"]], [s["suavizado"]])[0][0]
-                                    texto = f"Distancia: {d:.2f} | Coseno: {c:.3f}"
+            texto = f"Distancia: {d:.2f} | Coseno: {c:.3f}"
             distancias.append((s["nombre"], d))
             similitudes.append((s["nombre"], c))
             interpretaciones.append((s["nombre"], texto))
