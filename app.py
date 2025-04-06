@@ -13,7 +13,7 @@ from io import BytesIO
 import tempfile
 
 st.set_page_config(page_title="Análisis NIR - Laboratorio Metalúrgico", layout="wide")
-st.title("🔬 Análisis de Resultados por Espectroscopía NIR")
+st.title("🔬 Análisis de resultados por Espectroscopía NIR")
 st.markdown("""
 **Laboratorio Metalúrgico - Minera Chinalco Perú (2025)**  
 Desarrollador: Jersson Dávila R.
@@ -108,9 +108,7 @@ if uploaded_files and actualizar:
         if s["nombre"] != patron["nombre"]:
             d = np.linalg.norm(patron["suavizado"] - s["suavizado"])
             c = cosine_similarity([patron["suavizado"]], [s["suavizado"]])[0][0]
-            icono_dist = "✅" if d < 3 else "🟡" if d < 6 else "🔴"
-            icono_cos = "✅" if c > 0.9 else "🟡" if c > 0.7 else "🔴"
-            texto = f"{icono_dist} Distancia: {d:.2f} | {icono_cos} Coseno: {c:.3f}"
+                                    texto = f"Distancia: {d:.2f} | Coseno: {c:.3f}"
             distancias.append((s["nombre"], d))
             similitudes.append((s["nombre"], c))
             interpretaciones.append((s["nombre"], texto))
@@ -158,7 +156,7 @@ if uploaded_files and actualizar:
     )
     pdf.multi_cell(0, 8, recomendaciones)
 
-    output_pdf_bytes = pdf.output(dest='S').encode('utf-8')
+    output_pdf_bytes = pdf.output(dest='S').encode('latin1')
     st.download_button(
         label="📄 Descargar archivo PDF",
         data=output_pdf_bytes,
