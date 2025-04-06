@@ -49,10 +49,11 @@ def min_max_scale(spectrum):
     return (spectrum - np.min(spectrum)) / (np.max(spectrum) - np.min(spectrum))
 
 # === Subida de archivos ===
+actualizar = st.sidebar.button("🔁 Actualizar resultados")
 st.sidebar.header("Paso 1: Subir archivos .asd")
 uploaded_files = st.sidebar.file_uploader("Selecciona uno o varios archivos .asd", type="asd", accept_multiple_files=True)
 
-if uploaded_files:
+if uploaded_files and actualizar:
     wl_start, wl_end = 350, 2500
     num_target_points = 2151
     wavelengths = np.linspace(wl_start, wl_end, num_target_points)
@@ -157,7 +158,7 @@ if uploaded_files:
     )
     pdf.multi_cell(0, 8, recomendaciones)
 
-    output_pdf_bytes = pdf.output(dest='S').encode('latin1')
+    output_pdf_bytes = pdf.output(dest='S').encode('utf-8')
     st.download_button(
         label="📄 Descargar archivo PDF",
         data=output_pdf_bytes,
