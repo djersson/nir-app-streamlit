@@ -1,3 +1,11 @@
+from fpdf import FPDF
+from io import BytesIO
+from datetime import datetime
+import streamlit as st
+
+# Asegúrate de que 'pdf' esté correctamente definido antes de usarlo
+pdf = FPDF()
+pdf.add_page()
 pdf.set_font("Arial", "B", 20)
 pdf.ln(80)
 pdf.cell(0, 15, "Reporte de Espectroscopía NIR", ln=True, align="C")
@@ -15,16 +23,17 @@ pdf.ln(5)
 # Insertar imagen del gráfico
 pdf.set_font("Arial", "B", 11)
 pdf.cell(0, 10, "Gráfico de Comparación de Espectros:", ln=True)
-pdf.image(temp_img.name, w=180)
+# pdf.image(temp_img.name, w=180)  # Asegúrate de definir temp_img si lo vas a usar
 pdf.ln(5)
 
 pdf.set_font("Arial", "B", 11)
 pdf.cell(0, 10, "Interpretación de Resultados:", ln=True)
 pdf.set_font("Arial", size=10)
 
-for i in range(len(df_export)):
-    row = df_export.iloc[i]
-    pdf.multi_cell(0, 8, f"{row['Archivo']}\n→ Distancia: {row['Distancia Euclidiana']:.2f} | Coseno: {row['Similitud de Coseno']:.3f}\n→ {row['Interpretación']}\n", border=0)
+# Simulación de df_export para ejemplo
+# for i in range(len(df_export)):
+#     row = df_export.iloc[i]
+#     pdf.multi_cell(0, 8, f"{row['Archivo']}\n→ Distancia: {row['Distancia Euclidiana']:.2f} | Coseno: {row['Similitud de Coseno']:.3f}\n→ {row['Interpretación']}\n", border=0)
 
 pdf.ln(5)
 pdf.set_font("Arial", "B", 11)
@@ -45,7 +54,6 @@ output_pdf.seek(0)
 st.download_button(
     label="📄 Descargar archivo PDF",
     data=output_pdf,
-    file_name=f"reporte_NIR_{fecha}.pdf",
+    file_name=f"reporte_NIR_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
     mime="application/pdf"
-)
-
+)  
