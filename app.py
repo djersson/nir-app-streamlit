@@ -20,7 +20,7 @@ pdf.set_font("Arial", size=10)
 pdf.cell(0, 10, f"Fecha de análisis: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True)
 pdf.ln(5)
 
-# Insertar imagen del gráfico
+# Insertar imagen del gráfico (opcional si tienes temp_img.name)
 pdf.set_font("Arial", "B", 11)
 pdf.cell(0, 10, "Gráfico de Comparación de Espectros:", ln=True)
 # pdf.image(temp_img.name, w=180)  # Asegúrate de definir temp_img si lo vas a usar
@@ -30,7 +30,7 @@ pdf.set_font("Arial", "B", 11)
 pdf.cell(0, 10, "Interpretación de Resultados:", ln=True)
 pdf.set_font("Arial", size=10)
 
-# Simulación de df_export para ejemplo
+# Simulación de resultados si no tienes df_export aún
 # for i in range(len(df_export)):
 #     row = df_export.iloc[i]
 #     pdf.multi_cell(0, 8, f"{row['Archivo']}\n→ Distancia: {row['Distancia Euclidiana']:.2f} | Coseno: {row['Similitud de Coseno']:.3f}\n→ {row['Interpretación']}\n", border=0)
@@ -47,13 +47,12 @@ recomendaciones = (
 )
 pdf.multi_cell(0, 8, recomendaciones)
 
-output_pdf = BytesIO()
-pdf.output(output_pdf)
-output_pdf.seek(0)
+# === Exportar como bytes correctamente ===
+output_pdf_bytes = pdf.output(dest='S').encode('latin1')
 
 st.download_button(
     label="📄 Descargar archivo PDF",
-    data=output_pdf,
+    data=output_pdf_bytes,
     file_name=f"reporte_NIR_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf",
     mime="application/pdf"
-)  
+)
