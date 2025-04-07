@@ -50,6 +50,9 @@ actualizar = st.sidebar.button("🔁 Actualizar resultados")
 st.sidebar.header("Paso 1: Subir archivos .asd")
 uploaded_files = st.sidebar.file_uploader("Selecciona uno o varios archivos .asd", type="asd", accept_multiple_files=True)
 
+if uploaded_files:
+    nombre_patron = st.sidebar.selectbox("Paso 2: Seleccionar archivo patrón", [f.name for f in uploaded_files])
+
 if uploaded_files and actualizar:
     wl_start, wl_end = 350, 2500
     num_target_points = 2151
@@ -79,8 +82,7 @@ if uploaded_files and actualizar:
             "final": wl_end
         })
 
-    nombre_patron = st.sidebar.selectbox("Paso 2: Seleccionar archivo patrón", [s["nombre"] for s in spectra_data])
-    patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
+    
 
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
