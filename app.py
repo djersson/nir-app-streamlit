@@ -84,7 +84,7 @@ if uploaded_files and actualizar:
 
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(6.5, 3.2))
     ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=2)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
@@ -132,13 +132,13 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("<h4 style='color:#00BFFF;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#262730;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#00BFFF;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#007ACC;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#00BFFF;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#007ACC;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
         dist = df_export.iloc[i]["Distancia Euclidiana"]
@@ -162,14 +162,14 @@ if uploaded_files and actualizar:
 
     st.markdown("""
 ---
-<h3 style='color:#00BFFF;'>✅ Recomendaciones</h3>
+<h3 style='color:#007ACC;'>✅ Recomendaciones</h3>
 <ul>
 <li><b>Distancia Euclidiana &gt; 6</b>: Considerar acción correctiva.</li>
 <li><b>Similitud de Coseno &lt; 0.5</b>: Indica un cambio significativo en la forma del espectro.</li>
 <li><b>Revisar condiciones</b> de muestreo, dilución o contaminación del reactivo.</li>
 </ul>
 
-<h3 style='color:#00BFFF;'>🧾 Leyenda para interpretación</h3>
+<h3 style='color:#007ACC;'>🧾 Leyenda para interpretación</h3>
 <b>Distancia Euclidiana:</b>
 <ul>
 <li>&lt; 3 : Muy similar al patrón</li>
