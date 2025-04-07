@@ -173,7 +173,7 @@ if uploaded_files and actualizar:
 <b>Distancia Euclidiana:</b>
 <ul>
 <li>&lt; 3 : Muy similar al patrón</li>
-<li>3–6 : Moderadamente diferente</li>
+<li>3-6 : Moderadamente diferente</li>
 <li>&gt; 6 : Diferencia significativa</li>
 </ul>
 <b>Similitud de Coseno:</b>
@@ -195,4 +195,3 @@ if uploaded_files and actualizar:
 """)
 else:
     st.info("Sube archivos .asd para procesarlos.")
-
