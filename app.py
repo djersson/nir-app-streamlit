@@ -198,7 +198,7 @@ if uploaded_files and actualizar:
                 "Δ Cambios de Pendiente": sc_diff,
                 "Δ Rugosidad": round(rug_diff, 4),
                 "Score ponderado": round(score, 4),
-                "#📊 % de similitud": round((1 - score) * 100, 2)
+                "📊 % de similitud": round((1 - score) * 100, 2)
             })
 
     df_final = pd.DataFrame(resultados)
