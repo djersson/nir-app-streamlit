@@ -84,7 +84,7 @@ if uploaded_files and actualizar:
 
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(8, 4))
     ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=2)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
@@ -132,13 +132,13 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("<h4 style='color:#4CAF50;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#00BFFF;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#4CAF50;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#00BFFF;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#4CAF50;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='color:#00BFFF;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
         dist = df_export.iloc[i]["Distancia Euclidiana"]
