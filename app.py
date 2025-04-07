@@ -198,7 +198,7 @@ if uploaded_files and actualizar:
                 "Δ Cambios de Pendiente": sc_diff,
                 "Δ Rugosidad": round(rug_diff, 4),
                 
-                "% de similitud": round((1 - score) * 100, 2)
+                "📊 % de similitud": round((1 - score) * 100, 2)
             })
 
     df_final = pd.DataFrame(resultados)
@@ -208,10 +208,6 @@ if uploaded_files and actualizar:
 
     st.markdown("""
 ---
-### ✅ Recomendaciones
-- Evaluar con mayor detalle las muestras marcadas como 🟡 o 🔴.
-- Comparar condiciones de muestreo, dilución, lote y conservación.
-- Usar patrón actualizado de referencia si el reactivo ha cambiado de proveedor o formulación.
 
 ---
 ### 📜 Leyenda para interpretación (% de similitud)
