@@ -113,13 +113,13 @@ if uploaded_files and actualizar:
     # === Gráfico resumen ===
     st.subheader("📈 Comparación de espectros normalizados")
     fig, ax = plt.subplots(figsize=(5, 2.5))
-    ax.plot(wavelengths, patron["suavizado"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
+    ax.plot(wavelengths, patron["interpolado"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
-            ax.plot(wavelengths, s["suavizado"], label=s["nombre"])
+            ax.plot(wavelengths, s["interpolado"], label=s["nombre"])
     ax.set_xlabel("Longitud de onda (nm)", fontsize=8)
-    ax.set_ylabel("Reflectancia (suavizada)", fontsize=8)
-    ax.set_title("Espectros NIR suavizados", fontsize=9)
+    ax.set_ylabel("Reflectancia (interpolada)", fontsize=8)
+    ax.set_title("Espectros NIR interpolados", fontsize=9)
     ax.legend(fontsize=6)
     ax.grid(True)
     ax.tick_params(labelsize=6)
@@ -129,11 +129,11 @@ if uploaded_files and actualizar:
     resultados = []
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
-            d = np.linalg.norm(patron["suavizado"] - s["suavizado"])
-            c = cosine_similarity([patron["suavizado"]], [s["suavizado"]])[0][0]
-            p = pearson_corr(patron["suavizado"], s["suavizado"])
-            a = auc_difference(patron["suavizado"], s["suavizado"])
-            m = mean_absolute_error(patron["suavizado"], s["suavizado"])
+            d = np.linalg.norm(patron["interpolado"] - s["interpolado"])
+            c = cosine_similarity([patron["interpolado"]], [s["interpolado"]])[0][0]
+            p = pearson_corr(patron["interpolado"], s["interpolado"])
+            a = auc_difference(patron["interpolado"], s["interpolado"])
+            m = mean_absolute_error(patron["interpolado"], s["interpolado"])
 
             def color_icono(valor, niveles):
                 if niveles[0](valor): return "✅"
