@@ -96,6 +96,21 @@ if uploaded_files and actualizar:
 
     patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
 
+    # === Gráfico resumen ===
+    st.subheader("📈 Comparación de espectros normalizados")
+    fig, ax = plt.subplots(figsize=(5, 2.5))
+    ax.plot(wavelengths, patron["suavizado"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
+    for s in spectra_data:
+        if s["nombre"] != patron["nombre"]:
+            ax.plot(wavelengths, s["suavizado"], label=s["nombre"])
+    ax.set_xlabel("Longitud de onda (nm)", fontsize=8)
+    ax.set_ylabel("Reflectancia (suavizada)", fontsize=8)
+    ax.set_title("Espectros NIR suavizados", fontsize=9)
+    ax.legend(fontsize=6)
+    ax.grid(True)
+    ax.tick_params(labelsize=6)
+    st.pyplot(fig)
+
     # === Cálculo ===
     distancias = []
     similitudes = []
@@ -112,7 +127,19 @@ if uploaded_files and actualizar:
             a = auc_difference(patron["suavizado"], s["suavizado"])
             m = mean_absolute_error(patron["suavizado"], s["suavizado"])
 
-            texto = f"Distancia: {d:.2f} | Coseno: {c:.3f} | Pearson: {p:.3f} | AUC: {a:.3f} | MAE: {m:.4f}"
+            # Interpretaciones visuales
+            def color_icono(valor, niveles):
+                if niveles[0](valor): return "✅"
+                if niveles[1](valor): return "🟡"
+                return "🔴"
+
+            icon_dist = color_icono(d, [lambda x: x<3, lambda x: x<6])
+            icon_cos = color_icono(c, [lambda x: x>0.9, lambda x: x>0.7])
+            icon_pear = color_icono(p, [lambda x: x>0.9, lambda x: x>0.7])
+            icon_auc = color_icono(a, [lambda x: x<0.05, lambda x: x<0.1])
+            icon_mae = color_icono(m, [lambda x: x<0.01, lambda x: x<0.03])
+
+            texto = f"Distancia: {d:.2f} {icon_dist} | Coseno: {c:.3f} {icon_cos} | Pearson: {p:.3f} {icon_pear} | AUC: {a:.3f} {icon_auc} | MAE: {m:.4f} {icon_mae}"
             distancias.append((s["nombre"], d))
             similitudes.append((s["nombre"], c))
             pearsons.append((s["nombre"], p))
@@ -129,21 +156,6 @@ if uploaded_files and actualizar:
         "Error Absoluto Medio": [x[1] for x in maes],
         "Interpretación": [x[1] for x in interpretaciones]
     })
-
-    st.markdown("### 📏 Distancia Euclidiana respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]])
-
-    st.markdown("### 📐 Similitud de Coseno respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]])
-
-    st.markdown("### 🔁 Correlación de Pearson")
-    st.dataframe(df_export[["Archivo", "Correlación Pearson"]])
-
-    st.markdown("### 🧮 Diferencia de Área bajo la Curva (AUC)")
-    st.dataframe(df_export[["Archivo", "Diferencia AUC"]])
-
-    st.markdown("### 📉 Error Absoluto Medio")
-    st.dataframe(df_export[["Archivo", "Error Absoluto Medio"]])
 
     st.markdown("### 🧠 Interpretación automática")
     for i in range(len(df_export)):
@@ -165,33 +177,33 @@ if uploaded_files and actualizar:
 ### 🧾 Leyenda para interpretación
 <b>Distancia Euclidiana:</b>
 <ul>
-<li>&lt; 3 : Muy similar al patrón</li>
-<li>3–6 : Moderadamente diferente</li>
-<li>&gt; 6 : Diferencia significativa</li>
+<li>✅ &lt; 3 : Muy similar al patrón</li>
+<li>🟡 3–6 : Moderadamente diferente</li>
+<li>🔴 &gt; 6 : Diferencia significativa</li>
 </ul>
 <b>Similitud de Coseno:</b>
 <ul>
-<li>&gt; 0.9 : Forma prácticamente idéntica</li>
-<li>0.7–0.9 : Forma parecida</li>
-<li>&lt; 0.7 : Forma distinta o alterada</li>
+<li>✅ &gt; 0.9 : Forma prácticamente idéntica</li>
+<li>🟡 0.7–0.9 : Forma parecida</li>
+<li>🔴 &lt; 0.7 : Forma distinta o alterada</li>
 </ul>
 <b>Correlación de Pearson:</b>
 <ul>
-<li>&gt; 0.9 : Muy alta correlación</li>
-<li>0.7–0.9 : Correlación moderada</li>
-<li>&lt; 0.7 : Baja correlación</li>
+<li>✅ &gt; 0.9 : Muy alta correlación</li>
+<li>🟡 0.7–0.9 : Correlación moderada</li>
+<li>🔴 &lt; 0.7 : Baja correlación</li>
 </ul>
 <b>Diferencia de AUC:</b>
 <ul>
-<li>&lt; 0.05 : Muy similares en área</li>
-<li>0.05–0.1 : Ligeramente diferentes</li>
-<li>&gt; 0.1 : Diferencia notable en contenido</li>
+<li>✅ &lt; 0.05 : Muy similares en área</li>
+<li>🟡 0.05–0.1 : Ligeramente diferentes</li>
+<li>🔴 &gt; 0.1 : Diferencia notable en contenido</li>
 </ul>
 <b>Error Absoluto Medio:</b>
 <ul>
-<li>&lt; 0.01 : Diferencia mínima</li>
-<li>0.01–0.03 : Diferencia moderada</li>
-<li>&gt; 0.03 : Diferencia significativa</li>
+<li>✅ &lt; 0.01 : Diferencia mínima</li>
+<li>🟡 0.01–0.03 : Diferencia moderada</li>
+<li>🔴 &gt; 0.03 : Diferencia significativa</li>
 </ul>
 """, unsafe_allow_html=True)
 
