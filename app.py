@@ -183,15 +183,7 @@ if uploaded_files and actualizar:
 <li>&lt; 0.7 : Forma distinta o alterada</li>
 </ul>
 """, unsafe_allow_html=True)
-**Distancia Euclidiana**:
-- < 3 : Muy similar al patrón
-- 3–6 : Moderadamente diferente
-- > 6 : Diferencia significativa
 
-**Similitud de Coseno**:
-- > 0.9 : Forma prácticamente idéntica
-- 0.7–0.9 : Forma parecida
-- < 0.7 : Forma distinta o alterada
 """)
 else:
     st.info("Sube archivos .asd para procesarlos.")
