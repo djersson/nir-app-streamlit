@@ -198,7 +198,7 @@ if uploaded_files and actualizar:
                 "Δ Cambios de Pendiente": sc_diff,
                 "Δ Rugosidad": round(rug_diff, 4),
                 "Score ponderado": round(score, 4),
-                "Evaluación": evaluacion
+                "% de similitud": round((1 - score) * 100, 2)
             })
 
     df_final = pd.DataFrame(resultados)
@@ -214,10 +214,10 @@ if uploaded_files and actualizar:
 - Usar patrón actualizado de referencia si el reactivo ha cambiado de proveedor o formulación.
 
 ---
-### 📜 Leyenda para interpretación (modelo ponderado)
-- ✅ Score ≤ 0.3: Aproximadamente igual al patrón  
-- 🟡 Score 0.3–0.6: Moderadamente diferente  
-- 🔴 Score > 0.6: Totalmente diferente
+### 📜 Leyenda para interpretación (% de similitud)
+- ✅ ≥ 70%: Aproximadamente igual al patrón  
+- 🟡 40%–69%: Moderadamente diferente  
+- 🔴 < 40%: Totalmente diferente
 """, unsafe_allow_html=True)
 
 else:
