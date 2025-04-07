@@ -137,17 +137,17 @@ if uploaded_files and actualizar:
 
             # Normalización de métricas
             d_norm = min(d / 20, 1)
-            c_norm = 1 - max(min(c, 1), 0)  # invertir para que mayor diferencia = mayor score
+            c_norm = 1 - max(min(c, 1), 0)
             p_norm = 1 - max(min(p, 1), 0)
             a_norm = min(a / 60, 1)
             m_norm = min(m / 0.1, 1)
 
-            # Ponderación
+            # NUEVOS PESOS para dar mayor sensibilidad a diluciones
             score = (
-                0.35 * d_norm +
-                0.25 * c_norm +
-                0.10 * p_norm +
-                0.20 * a_norm +
+                0.45 * d_norm +  # sube peso
+                0.15 * c_norm +
+                0.05 * p_norm +
+                0.25 * a_norm +  # sube peso
                 0.10 * m_norm
             )
 
