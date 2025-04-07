@@ -179,7 +179,7 @@ if uploaded_files and actualizar:
 <b>Similitud de Coseno:</b>
 <ul>
 <li>&gt; 0.9 : Forma prácticamente idéntica</li>
-<li>0.7–0.9 : Forma parecida</li>
+<li>0.7-0.9 : Forma parecida</li>
 <li>&lt; 0.7 : Forma distinta o alterada</li>
 </ul>
 """, unsafe_allow_html=True)
