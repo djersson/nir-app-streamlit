@@ -132,7 +132,7 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("<h4 style='color:#262730;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("📏 Distancia Euclidiana respecto al Patrón", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
     st.markdown("<h4 style='color:#262730;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
