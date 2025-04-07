@@ -170,13 +170,13 @@ if uploaded_files and actualizar:
 
             # PESOS actualizados incluyendo métricas de ruta
             score = (
-                0.20 * d_norm +
-                0.10 * c_norm +
-                0.05 * p_norm +
-                0.35 * a_norm +
+                0.15 * d_norm +
+                0.02 * c_norm +
+                0.03 * p_norm +
+                0.25 * a_norm +
                 0.05 * m_norm +
-                0.10 * cl_norm +
-                0.10 * sc_norm +
+                0.20 * cl_norm +
+                0.30 * sc_norm +
                 0.05 * rug_norm
             )
 
