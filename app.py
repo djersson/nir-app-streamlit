@@ -212,8 +212,8 @@ if uploaded_files and actualizar:
 ---
 ### 📜 Leyenda para interpretación (% de similitud)
 - ✅ ≥ 70%: Aproximadamente igual al patrón  
-- 🟡 40%–69%: Moderadamente diferente  
-- 🔴 < 40%: Totalmente diferente
+- 🟡 50%–69%: Moderadamente diferente  
+- 🔴 < 50%: Diferente
 """, unsafe_allow_html=True)
 
 else:
