@@ -140,11 +140,11 @@ if uploaded_files and actualizar:
                 if niveles[1](valor): return "🟡"
                 return "🔴"
 
-            icon_dist = color_icono(d, [lambda x: x<5, lambda x: x<8])
-            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.65])
-            icon_pear = color_icono(p, [lambda x: x>0.7, lambda x: x>0.5])
-            icon_auc = color_icono(a, [lambda x: x<15, lambda x: x<25])
-            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.07])
+            icon_dist = color_icono(d, [lambda x: x<5, lambda x: x<9])
+            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.6])
+            icon_pear = color_icono(p, [lambda x: x>0.7, lambda x: x>0.55])
+            icon_auc = color_icono(a, [lambda x: x<15, lambda x: x<35])
+            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.08])
 
             icons = [icon_dist, icon_cos, icon_pear, icon_auc, icon_mae]
             rojo = icons.count("🔴")
@@ -174,39 +174,39 @@ if uploaded_files and actualizar:
     st.markdown("""
 ---
 ### ✅ Recomendaciones
-- **Distancia Euclidiana > 8**: Considerar acción correctiva.
-- **Similitud de Coseno < 0.5**: Cambio significativo en forma espectral.
-- **Pearson < 0.5**: Baja correlación lineal.
-- **AUC > 25**: Diferencia notoria bajo la curva.
-- **MAE > 0.07**: Error medio absoluto alto.
+- **Distancia Euclidiana > 9**: Considerar acción correctiva.
+- **Similitud de Coseno < 0.6**: Cambio significativo en forma espectral.
+- **Pearson < 0.55**: Baja correlación lineal.
+- **AUC > 35**: Diferencia notoria bajo la curva.
+- **MAE > 0.08**: Error medio absoluto alto.
 - **Verificar** condiciones de muestreo, dilución o contaminación.
 
 ---
 ### 📜 Leyenda para interpretación
 **Distancia Euclidiana:**
 - ✅ < 5: Muy similar al patrón  
-- 🟡 5–8: Moderadamente diferente  
-- 🔴 > 8: Diferencia significativa
+- 🟡 5–9: Moderadamente diferente  
+- 🔴 > 9: Diferencia significativa
 
 **Similitud de Coseno:**
 - ✅ > 0.7: Forma muy similar  
-- 🟡 0.65–0.7: Forma parecida  
-- 🔴 < 0.65: Forma distinta o alterada
+- 🟡 0.6–0.7: Forma parecida  
+- 🔴 < 0.6: Forma distinta o alterada
 
 **Pearson:**
 - ✅ > 0.7: Correlación alta  
-- 🟡 0.5–0.7: Correlación media  
-- 🔴 < 0.5: Baja correlación
+- 🟡 0.55–0.7: Correlación media  
+- 🔴 < 0.55: Baja correlación
 
 **AUC (Diferencia de área bajo la curva):**
 - ✅ < 15: Prácticamente igual  
-- 🟡 15–25: Leve diferencia  
-- 🔴 > 25: Diferencia significativa
+- 🟡 15–35: Leve diferencia  
+- 🔴 > 35: Diferencia significativa
 
 **MAE (Error Absoluto Medio):**
 - ✅ < 0.06: Muy bajo  
-- 🟡 0.06–0.07: Tolerable  
-- 🔴 > 0.07: Alto
+- 🟡 0.06–0.08: Tolerable  
+- 🔴 > 0.08: Alto
 """, unsafe_allow_html=True)
 
 else:
