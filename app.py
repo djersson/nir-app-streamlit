@@ -132,13 +132,13 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("📏 Distancia Euclidiana respecto al Patrón", unsafe_allow_html=True)
+    st.markdown("### 📏 Distancia Euclidiana respecto al Patrón", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#262730;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
+    st.markdown("### 📐 Similitud de Coseno respecto al Patrón", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
-    st.markdown("<h4 style='color:#007ACC;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
+    st.markdown("### 🧠 Interpretación automática", unsafe_allow_html=True)
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
         dist = df_export.iloc[i]["Distancia Euclidiana"]
@@ -162,14 +162,14 @@ if uploaded_files and actualizar:
 
     st.markdown("""
 ---
-<h3 style='color:#007ACC;'>✅ Recomendaciones</h3>
+### ✅ Recomendaciones
 <ul>
 <li><b>Distancia Euclidiana &gt; 6</b>: Considerar acción correctiva.</li>
 <li><b>Similitud de Coseno &lt; 0.5</b>: Indica un cambio significativo en la forma del espectro.</li>
 <li><b>Revisar condiciones</b> de muestreo, dilución o contaminación del reactivo.</li>
 </ul>
 
-<h3 style='color:#007ACC;'>🧾 Leyenda para interpretación</h3>
+### 🧾 Leyenda para interpretación
 <b>Distancia Euclidiana:</b>
 <ul>
 <li>&lt; 3 : Muy similar al patrón</li>
