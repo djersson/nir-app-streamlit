@@ -142,12 +142,12 @@ if uploaded_files and actualizar:
             a_norm = min(a / 60, 1)
             m_norm = min(m / 0.1, 1)
 
-            # NUEVOS PESOS para dar mayor sensibilidad a diluciones
+            # NUEVOS PESOS actualizados por el usuario
             score = (
-                0.45 * d_norm +  # sube peso
+                0.25 * d_norm +
                 0.15 * c_norm +
                 0.05 * p_norm +
-                0.25 * a_norm +  # sube peso
+                0.45 * a_norm +
                 0.10 * m_norm
             )
 
