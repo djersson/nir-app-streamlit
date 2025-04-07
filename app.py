@@ -93,10 +93,10 @@ if uploaded_files and actualizar:
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
             ax.plot(wavelengths, s["minmax"], label=s["nombre"])
-    ax.set_xlabel("Longitud de onda (nm)", fontsize=9)
-    ax.set_ylabel("Reflectancia (0-1)", fontsize=9)
-    ax.set_title("Espectros NIR normalizados", fontsize=10)
-    ax.legend(fontsize=8)
+    ax.set_xlabel("Longitud de onda (nm)", fontsize=7)
+    ax.set_ylabel("Reflectancia (0-1)", fontsize=7)
+    ax.set_title("Espectros NIR normalizados", fontsize=8)
+    ax.legend(fontsize=6)
     ax.grid(True)
     ax.tick_params(labelsize=8)
     st.pyplot(fig)
