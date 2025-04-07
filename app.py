@@ -141,10 +141,10 @@ if uploaded_files and actualizar:
                 return "🔴"
 
             icon_dist = color_icono(d, [lambda x: x<5, lambda x: x<8])
-            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.5])
-            icon_pear = color_icono(p, [lambda x: x>0.65, lambda x: x>0.4])
-            icon_auc = color_icono(a, [lambda x: x<10, lambda x: x<25])
-            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.08])
+            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.65])
+            icon_pear = color_icono(p, [lambda x: x>0.7, lambda x: x>0.5])
+            icon_auc = color_icono(a, [lambda x: x<15, lambda x: x<25])
+            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.07])
 
             icons = [icon_dist, icon_cos, icon_pear, icon_auc, icon_mae]
             rojo = icons.count("🔴")
@@ -176,9 +176,9 @@ if uploaded_files and actualizar:
 ### ✅ Recomendaciones
 - **Distancia Euclidiana > 8**: Considerar acción correctiva.
 - **Similitud de Coseno < 0.5**: Cambio significativo en forma espectral.
-- **Pearson < 0.4**: Baja correlación lineal.
+- **Pearson < 0.5**: Baja correlación lineal.
 - **AUC > 25**: Diferencia notoria bajo la curva.
-- **MAE > 0.08**: Error medio absoluto alto.
+- **MAE > 0.07**: Error medio absoluto alto.
 - **Verificar** condiciones de muestreo, dilución o contaminación.
 
 ---
@@ -190,23 +190,23 @@ if uploaded_files and actualizar:
 
 **Similitud de Coseno:**
 - ✅ > 0.7: Forma muy similar  
-- 🟡 0.5–0.7: Forma parecida  
-- 🔴 < 0.5: Forma distinta o alterada
+- 🟡 0.65–0.7: Forma parecida  
+- 🔴 < 0.65: Forma distinta o alterada
 
 **Pearson:**
-- ✅ > 0.65: Correlación alta  
-- 🟡 0.4–0.65: Correlación media  
-- 🔴 < 0.4: Baja correlación
+- ✅ > 0.7: Correlación alta  
+- 🟡 0.5–0.7: Correlación media  
+- 🔴 < 0.5: Baja correlación
 
 **AUC (Diferencia de área bajo la curva):**
-- ✅ < 10: Prácticamente igual  
-- 🟡 10–25: Leve diferencia  
+- ✅ < 15: Prácticamente igual  
+- 🟡 15–25: Leve diferencia  
 - 🔴 > 25: Diferencia significativa
 
 **MAE (Error Absoluto Medio):**
 - ✅ < 0.06: Muy bajo  
-- 🟡 0.06–0.08: Tolerable  
-- 🔴 > 0.08: Alto
+- 🟡 0.06–0.07: Tolerable  
+- 🔴 > 0.07: Alto
 """, unsafe_allow_html=True)
 
 else:
