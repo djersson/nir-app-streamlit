@@ -179,7 +179,39 @@ if uploaded_files and actualizar:
         archivo = df_export.iloc[i]["Archivo"]
         st.markdown(f"**{archivo}** → {df_export.iloc[i]['Interpretación']}")
 
-    st.markdown("""... (leyenda y recomendaciones se mantienen igual)""")
+    st.markdown("""
+---
+### ✅ Recomendaciones
+- **Distancia Euclidiana > 6**: Considerar acción correctiva.
+- **Similitud de Coseno < 0.5**: Indica un cambio significativo en la forma del espectro.
+- **Correlación de Pearson < 0.5**: Muestra baja correlación lineal.
+- **AUC > 0.1**: Diferencias de área bajo la curva son relevantes.
+- **MAE > 0.03**: Indica un error medio absoluto alto.
+- **Revisar condiciones** de muestreo, dilución o contaminación del reactivo.
+
+---
+
+### 🧾 Leyenda para interpretación
+**Distancia Euclidiana:**
+- ✅ < 3: Muy similar al patrón  
+- 🟡 3–6: Moderadamente diferente  
+- 🔴 > 6: Diferencia significativa
+
+**Similitud de Coseno y Pearson:**
+- ✅ > 0.9: Forma prácticamente idéntica  
+- 🟡 0.7–0.9: Forma parecida  
+- 🔴 < 0.7: Forma distinta o alterada
+
+**AUC (Área bajo la curva):**
+- ✅ < 0.05: Prácticamente igual  
+- 🟡 0.05–0.1: Leve diferencia  
+- 🔴 > 0.1: Diferencia significativa
+
+**MAE (Error Absoluto Medio):**
+- ✅ < 0.01: Muy bajo  
+- 🟡 0.01–0.03: Tolerable  
+- 🔴 > 0.03: Alto
+""", unsafe_allow_html=True)
 
 else:
     st.info("Sube archivos .asd para procesarlos.")
