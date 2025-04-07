@@ -56,7 +56,7 @@ def pearson_corr(a, b):
     return np.corrcoef(a, b)[0, 1]
 
 # === Subida de archivos ===
-actualizar = st.sidebar.button("🔁 Actualizar resultados")
+actualizar = st.sidebar.button("🤁 Actualizar resultados")
 st.sidebar.header("Paso 1: Subir archivos .asd")
 uploaded_files = st.sidebar.file_uploader("Selecciona uno o varios archivos .asd", type="asd", accept_multiple_files=True)
 
@@ -126,13 +126,7 @@ if uploaded_files and actualizar:
     st.pyplot(fig)
 
     # === Cálculo ===
-    distancias = []
-    similitudes = []
-    pearsons = []
-    aucs = []
-    maes = []
-    interpretaciones = []
-
+    resultados = []
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
             d = np.linalg.norm(patron["suavizado"] - s["suavizado"])
@@ -141,7 +135,6 @@ if uploaded_files and actualizar:
             a = auc_difference(patron["suavizado"], s["suavizado"])
             m = mean_absolute_error(patron["suavizado"], s["suavizado"])
 
-            # Interpretaciones visuales
             def color_icono(valor, niveles):
                 if niveles[0](valor): return "✅"
                 if niveles[1](valor): return "🟡"
@@ -153,56 +146,55 @@ if uploaded_files and actualizar:
             icon_auc = color_icono(a, [lambda x: x<0.05, lambda x: x<0.1])
             icon_mae = color_icono(m, [lambda x: x<0.01, lambda x: x<0.03])
 
-            texto = f"Distancia: {d:.2f} {icon_dist} | Coseno: {c:.3f} {icon_cos} | Pearson: {p:.3f} {icon_pear} | AUC: {a:.3f} {icon_auc} | MAE: {m:.4f} {icon_mae}"
-            distancias.append((s["nombre"], d))
-            similitudes.append((s["nombre"], c))
-            pearsons.append((s["nombre"], p))
-            aucs.append((s["nombre"], a))
-            maes.append((s["nombre"], m))
-            interpretaciones.append((s["nombre"], texto))
+            # Evaluación global tipo semáforo
+            icons = [icon_dist, icon_cos, icon_pear, icon_auc, icon_mae]
+            rojo = icons.count("🔴")
+            verde_amarillo = icons.count("✅") + icons.count("🟡")
+            if verde_amarillo >= 3:
+                resumen = "✅ Aproximadamente igual al patrón"
+            elif rojo >= 3:
+                resumen = "🔴 Totalmente diferente"
+            else:
+                resumen = "🟡 Moderadamente diferente"
 
-    df_export = pd.DataFrame({
-        "Archivo": [x[0] for x in distancias],
-        "Distancia Euclidiana": [x[1] for x in distancias],
-        "Similitud de Coseno": [x[1] for x in similitudes],
-        "Correlación Pearson": [x[1] for x in pearsons],
-        "Diferencia AUC": [x[1] for x in aucs],
-        "Error Absoluto Medio": [x[1] for x in maes],
-        "Interpretación": [x[1] for x in interpretaciones]
-    })
+            resultados.append({
+                "Archivo": s["nombre"],
+                "Distancia Euclidiana": round(d, 4),
+                "Similitud de Coseno": round(c, 4),
+                "Correlación Pearson": round(p, 4),
+                "Diferencia AUC": round(a, 4),
+                "Error Absoluto Medio": round(m, 4),
+                "Evaluación": resumen
+            })
+
+    df_final = pd.DataFrame(resultados)
 
     st.markdown("### 📊 Resultados numéricos")
-    st.dataframe(df_export.drop(columns=["Interpretación"]))
-
-    st.markdown("### 🧠 Interpretación automática")
-    for i in range(len(df_export)):
-        archivo = df_export.iloc[i]["Archivo"]
-        st.markdown(f"**{archivo}** → {df_export.iloc[i]['Interpretación']}")
+    st.dataframe(df_final, use_container_width=True)
 
     st.markdown("""
 ---
 ### ✅ Recomendaciones
 - **Distancia Euclidiana > 6**: Considerar acción correctiva.
-- **Similitud de Coseno < 0.5**: Indica un cambio significativo en la forma del espectro.
-- **Correlación de Pearson < 0.5**: Muestra baja correlación lineal.
-- **AUC > 0.1**: Diferencias de área bajo la curva son relevantes.
-- **MAE > 0.03**: Indica un error medio absoluto alto.
-- **Revisar condiciones** de muestreo, dilución o contaminación del reactivo.
+- **Similitud de Coseno < 0.5**: Cambio significativo en forma espectral.
+- **Pearson < 0.5**: Baja correlación lineal.
+- **AUC > 0.1**: Diferencia notoria bajo la curva.
+- **MAE > 0.03**: Error medio absoluto alto.
+- **Verificar** condiciones de muestreo, dilución o contaminación.
 
 ---
-
-### 🧾 Leyenda para interpretación
+### 📜 Leyenda para interpretación
 **Distancia Euclidiana:**
 - ✅ < 3: Muy similar al patrón  
 - 🟡 3–6: Moderadamente diferente  
 - 🔴 > 6: Diferencia significativa
 
-**Similitud de Coseno y Pearson:**
+**Similitud de Coseno / Pearson:**
 - ✅ > 0.9: Forma prácticamente idéntica  
 - 🟡 0.7–0.9: Forma parecida  
 - 🔴 < 0.7: Forma distinta o alterada
 
-**AUC (Área bajo la curva):**
+**AUC (Diferencia de área bajo la curva):**
 - ✅ < 0.05: Prácticamente igual  
 - 🟡 0.05–0.1: Leve diferencia  
 - 🔴 > 0.1: Diferencia significativa
