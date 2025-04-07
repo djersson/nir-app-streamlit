@@ -84,6 +84,8 @@ if uploaded_files and actualizar:
 
     
 
+    patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
+
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
     fig, ax = plt.subplots(figsize=(4.5, 2))
