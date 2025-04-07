@@ -125,7 +125,7 @@ if uploaded_files and actualizar:
     ax.tick_params(labelsize=6)
     st.pyplot(fig)
 
-    # === Cálculo ===
+    # === Cálculo con ponderación ===
     resultados = []
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
@@ -135,26 +135,28 @@ if uploaded_files and actualizar:
             a = auc_difference(patron["interpolado"], s["interpolado"])
             m = mean_absolute_error(patron["interpolado"], s["interpolado"])
 
-            def color_icono(valor, niveles):
-                if niveles[0](valor): return "✅"
-                if niveles[1](valor): return "🟡"
-                return "🔴"
+            # Normalización de métricas
+            d_norm = min(d / 20, 1)
+            c_norm = 1 - max(min(c, 1), 0)  # invertir para que mayor diferencia = mayor score
+            p_norm = 1 - max(min(p, 1), 0)
+            a_norm = min(a / 60, 1)
+            m_norm = min(m / 0.1, 1)
 
-            icon_dist = color_icono(d, [lambda x: x<5, lambda x: x<9])
-            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.6])
-            icon_pear = color_icono(p, [lambda x: x>0.7, lambda x: x>0.55])
-            icon_auc = color_icono(a, [lambda x: x<15, lambda x: x<35])
-            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.08])
+            # Ponderación
+            score = (
+                0.35 * d_norm +
+                0.25 * c_norm +
+                0.10 * p_norm +
+                0.20 * a_norm +
+                0.10 * m_norm
+            )
 
-            icons = [icon_dist, icon_cos, icon_pear, icon_auc, icon_mae]
-            rojo = icons.count("🔴")
-            verde_amarillo = icons.count("✅") + icons.count("🟡")
-            if verde_amarillo >= 3:
-                resumen = "✅ Aproximadamente igual al patrón"
-            elif rojo >= 3:
-                resumen = "🔴 Totalmente diferente"
+            if score <= 0.3:
+                evaluacion = "✅ Aproximadamente igual al patrón"
+            elif score <= 0.6:
+                evaluacion = "🟡 Moderadamente diferente"
             else:
-                resumen = "🟡 Moderadamente diferente"
+                evaluacion = "🔴 Totalmente diferente"
 
             resultados.append({
                 "Archivo": s["nombre"],
@@ -163,7 +165,7 @@ if uploaded_files and actualizar:
                 "Correlación Pearson": round(p, 4),
                 "Diferencia AUC": round(a, 4),
                 "Error Absoluto Medio": round(m, 4),
-                "Evaluación": resumen
+                "Evaluación": evaluacion
             })
 
     df_final = pd.DataFrame(resultados)
@@ -174,39 +176,15 @@ if uploaded_files and actualizar:
     st.markdown("""
 ---
 ### ✅ Recomendaciones
-- **Distancia Euclidiana > 9**: Considerar acción correctiva.
-- **Similitud de Coseno < 0.6**: Cambio significativo en forma espectral.
-- **Pearson < 0.55**: Baja correlación lineal.
-- **AUC > 35**: Diferencia notoria bajo la curva.
-- **MAE > 0.08**: Error medio absoluto alto.
-- **Verificar** condiciones de muestreo, dilución o contaminación.
+- Evaluar con mayor detalle las muestras marcadas como 🟡 o 🔴.
+- Comparar condiciones de muestreo, dilución, lote y conservación.
+- Usar patrón actualizado de referencia si el reactivo ha cambiado de proveedor o formulación.
 
 ---
-### 📜 Leyenda para interpretación
-**Distancia Euclidiana:**
-- ✅ < 5: Muy similar al patrón  
-- 🟡 5–9: Moderadamente diferente  
-- 🔴 > 9: Diferencia significativa
-
-**Similitud de Coseno:**
-- ✅ > 0.7: Forma muy similar  
-- 🟡 0.6–0.7: Forma parecida  
-- 🔴 < 0.6: Forma distinta o alterada
-
-**Pearson:**
-- ✅ > 0.7: Correlación alta  
-- 🟡 0.55–0.7: Correlación media  
-- 🔴 < 0.55: Baja correlación
-
-**AUC (Diferencia de área bajo la curva):**
-- ✅ < 15: Prácticamente igual  
-- 🟡 15–35: Leve diferencia  
-- 🔴 > 35: Diferencia significativa
-
-**MAE (Error Absoluto Medio):**
-- ✅ < 0.06: Muy bajo  
-- 🟡 0.06–0.08: Tolerable  
-- 🔴 > 0.08: Alto
+### 📜 Leyenda para interpretación (modelo ponderado)
+- ✅ Score ≤ 0.3: Aproximadamente igual al patrón  
+- 🟡 Score 0.3–0.6: Moderadamente diferente  
+- 🔴 Score > 0.6: Totalmente diferente
 """, unsafe_allow_html=True)
 
 else:
