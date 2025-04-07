@@ -132,25 +132,13 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("""
-    ---
-    ```
-    ==== DISTANCIA EUCLIDIANA RESPECTO AL PATRÓN ====
-    ```
-    """)
+    st.markdown("<h4 style='color:#4CAF50;'>📏 Distancia Euclidiana respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
 
-    st.markdown("""
-    ```
-    ==== SIMILITUD DE COSENO RESPECTO AL PATRÓN ====
-    ```
-    """)
+    st.markdown("<h4 style='color:#4CAF50;'>📐 Similitud de Coseno respecto al Patrón</h4>", unsafe_allow_html=True)
     st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
 
-    st.markdown("""
-    ```
-    ==== INTERPRETACIÓN AUTOMÁTICA ====
-    """)
+    st.markdown("<h4 style='color:#4CAF50;'>🧠 Interpretación automática</h4>", unsafe_allow_html=True)
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
         dist = df_export.iloc[i]["Distancia Euclidiana"]
@@ -174,12 +162,27 @@ if uploaded_files and actualizar:
 
     st.markdown("""
 ---
-### ✅ Recomendaciones
-- **Distancia Euclidiana > 6**: Considerar acción correctiva.
-- **Similitud de Coseno < 0.5**: Indica un cambio significativo en la forma del espectro.
-- **Revisar condiciones** de muestreo, dilución o contaminación del reactivo.
+<h3 style='color:#00BFFF;'>✅ Recomendaciones</h3>
+<ul>
+<li><b>Distancia Euclidiana &gt; 6</b>: Considerar acción correctiva.</li>
+<li><b>Similitud de Coseno &lt; 0.5</b>: Indica un cambio significativo en la forma del espectro.</li>
+<li><b>Revisar condiciones</b> de muestreo, dilución o contaminación del reactivo.</li>
+</ul>
 
-### 🧾 Leyenda para interpretación
+<h3 style='color:#00BFFF;'>🧾 Leyenda para interpretación</h3>
+<b>Distancia Euclidiana:</b>
+<ul>
+<li>&lt; 3 : Muy similar al patrón</li>
+<li>3–6 : Moderadamente diferente</li>
+<li>&gt; 6 : Diferencia significativa</li>
+</ul>
+<b>Similitud de Coseno:</b>
+<ul>
+<li>&gt; 0.9 : Forma prácticamente idéntica</li>
+<li>0.7–0.9 : Forma parecida</li>
+<li>&lt; 0.7 : Forma distinta o alterada</li>
+</ul>
+""", unsafe_allow_html=True)
 **Distancia Euclidiana**:
 - < 3 : Muy similar al patrón
 - 3–6 : Moderadamente diferente
