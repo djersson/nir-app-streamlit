@@ -50,6 +50,7 @@ actualizar = st.sidebar.button("🔁 Actualizar resultados")
 st.sidebar.header("Paso 1: Subir archivos .asd")
 uploaded_files = st.sidebar.file_uploader("Selecciona uno o varios archivos .asd", type="asd", accept_multiple_files=True)
 
+nombre_patron = None
 if uploaded_files:
     nombre_patron = st.sidebar.selectbox("Paso 2: Seleccionar archivo patrón", [f.name for f in uploaded_files])
 
@@ -60,6 +61,7 @@ if uploaded_files and actualizar:
 
     spectra_data = []
     for file in uploaded_files:
+        file.seek(0)
         raw = read_asd_spectrum(file)
         raw_clean = strict_clean(raw)
         wl_original = np.linspace(wl_start, wl_end, len(raw_clean))
@@ -82,27 +84,25 @@ if uploaded_files and actualizar:
             "final": wl_end
         })
 
-    
-
     patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
 
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(4.5, 2))
-    ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=2)
+    fig, ax = plt.subplots(figsize=(6, 3))
+    ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
             ax.plot(wavelengths, s["minmax"], label=s["nombre"])
-    ax.set_xlabel("Longitud de onda (nm)", fontsize=7)
-    ax.set_ylabel("Reflectancia (0-1)", fontsize=7)
-    ax.set_title("Espectros NIR normalizados", fontsize=8)
-    ax.legend(fontsize=4)
+    ax.set_xlabel("Longitud de onda (nm)", fontsize=8)
+    ax.set_ylabel("Reflectancia (0-1)", fontsize=8)
+    ax.set_title("Espectros NIR normalizados", fontsize=9)
+    ax.legend(fontsize=6)
     ax.grid(True)
     ax.tick_params(labelsize=6)
     st.pyplot(fig)
 
     # === Tabla resumen de espectros ===
-    st.subheader("📋 Tabla resumen de archivos cargados")
+    st.markdown("### 📋 Tabla resumen de archivos cargados")
     df_resumen = pd.DataFrame([
         {
             "Archivo": s["nombre"],
@@ -113,10 +113,9 @@ if uploaded_files and actualizar:
             "Resolución estimada (nm/punto)": s["resolucion"]
         } for s in spectra_data
     ])
-    st.dataframe(df_resumen, use_container_width=True)
+    st.dataframe(df_resumen.style.set_properties(**{'text-align': 'center'}), use_container_width=True)
 
     # === Cálculo ===
-
     distancias = []
     similitudes = []
     interpretaciones = []
@@ -137,13 +136,13 @@ if uploaded_files and actualizar:
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
-    st.markdown("### 📏 Distancia Euclidiana respecto al Patrón", unsafe_allow_html=True)
-    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]], use_container_width=True)
+    st.markdown("### 📏 Distancia Euclidiana respecto al Patrón")
+    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]].style.set_properties(**{'text-align': 'center'}), use_container_width=True)
 
-    st.markdown("### 📐 Similitud de Coseno respecto al Patrón", unsafe_allow_html=True)
-    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]], use_container_width=True)
+    st.markdown("### 📐 Similitud de Coseno respecto al Patrón")
+    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]].style.set_properties(**{'text-align': 'center'}), use_container_width=True)
 
-    st.markdown("### 🧠 Interpretación automática", unsafe_allow_html=True)
+    st.markdown("### 🧠 Interpretación automática")
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
         dist = df_export.iloc[i]["Distancia Euclidiana"]
