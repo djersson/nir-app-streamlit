@@ -55,6 +55,16 @@ def mean_absolute_error(a, b):
 def pearson_corr(a, b):
     return np.corrcoef(a, b)[0, 1]
 
+def curve_length(wl, ref):
+    return np.sum(np.sqrt(np.diff(wl)**2 + np.diff(ref)**2))
+
+def slope_change_count(ref):
+    deriv = np.diff(ref)
+    return np.sum(np.diff(np.sign(deriv)) != 0)
+
+def spectral_rugosity(ref):
+    return np.std(np.diff(ref))
+
 # === Subida de archivos ===
 actualizar = st.sidebar.button("🤁 Actualizar resultados")
 st.sidebar.header("Paso 1: Subir archivos .asd")
@@ -134,21 +144,40 @@ if uploaded_files and actualizar:
             p = pearson_corr(patron["interpolado"], s["interpolado"])
             a = auc_difference(patron["interpolado"], s["interpolado"])
             m = mean_absolute_error(patron["interpolado"], s["interpolado"])
+            
+            # Nuevas métricas de ruta
+            cl_ref = curve_length(wavelengths, s["interpolado"])
+            cl_pat = curve_length(wavelengths, patron["interpolado"])
+            cl_diff = abs(cl_ref - cl_pat)
 
-            # Normalización de métricas
+            sc_ref = slope_change_count(s["interpolado"])
+            sc_pat = slope_change_count(patron["interpolado"])
+            sc_diff = abs(sc_ref - sc_pat)
+
+            rug_ref = spectral_rugosity(s["interpolado"])
+            rug_pat = spectral_rugosity(patron["interpolado"])
+            rug_diff = abs(rug_ref - rug_pat)
+
+            # Normalización
             d_norm = min(d / 20, 1)
             c_norm = 1 - max(min(c, 1), 0)
             p_norm = 1 - max(min(p, 1), 0)
             a_norm = min(a / 60, 1)
             m_norm = min(m / 0.1, 1)
+            cl_norm = min(cl_diff / 10, 1)
+            sc_norm = min(sc_diff / 100, 1)
+            rug_norm = min(rug_diff / 0.05, 1)
 
-            # NUEVOS PESOS actualizados por el usuario
+            # PESOS actualizados incluyendo métricas de ruta
             score = (
-                0.25 * d_norm +
-                0.15 * c_norm +
+                0.20 * d_norm +
+                0.10 * c_norm +
                 0.05 * p_norm +
-                0.45 * a_norm +
-                0.10 * m_norm
+                0.35 * a_norm +
+                0.05 * m_norm +
+                0.10 * cl_norm +
+                0.10 * sc_norm +
+                0.05 * rug_norm
             )
 
             if score <= 0.3:
@@ -165,6 +194,9 @@ if uploaded_files and actualizar:
                 "Correlación Pearson": round(p, 4),
                 "Diferencia AUC": round(a, 4),
                 "Error Absoluto Medio": round(m, 4),
+                "Δ Longitud Curva": round(cl_diff, 4),
+                "Δ Cambios de Pendiente": sc_diff,
+                "Δ Rugosidad": round(rug_diff, 4),
                 "Evaluación": evaluacion
             })
 
