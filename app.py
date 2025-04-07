@@ -140,13 +140,12 @@ if uploaded_files and actualizar:
                 if niveles[1](valor): return "🟡"
                 return "🔴"
 
-            icon_dist = color_icono(d, [lambda x: x<3, lambda x: x<6])
-            icon_cos = color_icono(c, [lambda x: x>0.9, lambda x: x>0.7])
-            icon_pear = color_icono(p, [lambda x: x>0.9, lambda x: x>0.7])
-            icon_auc = color_icono(a, [lambda x: x<0.05, lambda x: x<0.1])
-            icon_mae = color_icono(m, [lambda x: x<0.01, lambda x: x<0.03])
+            icon_dist = color_icono(d, [lambda x: x<5, lambda x: x<8])
+            icon_cos = color_icono(c, [lambda x: x>0.7, lambda x: x>0.5])
+            icon_pear = color_icono(p, [lambda x: x>0.65, lambda x: x>0.4])
+            icon_auc = color_icono(a, [lambda x: x<10, lambda x: x<25])
+            icon_mae = color_icono(m, [lambda x: x<0.06, lambda x: x<0.08])
 
-            # Evaluación global tipo semáforo
             icons = [icon_dist, icon_cos, icon_pear, icon_auc, icon_mae]
             rojo = icons.count("🔴")
             verde_amarillo = icons.count("✅") + icons.count("🟡")
@@ -175,34 +174,39 @@ if uploaded_files and actualizar:
     st.markdown("""
 ---
 ### ✅ Recomendaciones
-- **Distancia Euclidiana > 6**: Considerar acción correctiva.
+- **Distancia Euclidiana > 8**: Considerar acción correctiva.
 - **Similitud de Coseno < 0.5**: Cambio significativo en forma espectral.
-- **Pearson < 0.5**: Baja correlación lineal.
-- **AUC > 0.1**: Diferencia notoria bajo la curva.
-- **MAE > 0.03**: Error medio absoluto alto.
+- **Pearson < 0.4**: Baja correlación lineal.
+- **AUC > 25**: Diferencia notoria bajo la curva.
+- **MAE > 0.08**: Error medio absoluto alto.
 - **Verificar** condiciones de muestreo, dilución o contaminación.
 
 ---
 ### 📜 Leyenda para interpretación
 **Distancia Euclidiana:**
-- ✅ < 3: Muy similar al patrón  
-- 🟡 3–6: Moderadamente diferente  
-- 🔴 > 6: Diferencia significativa
+- ✅ < 5: Muy similar al patrón  
+- 🟡 5–8: Moderadamente diferente  
+- 🔴 > 8: Diferencia significativa
 
-**Similitud de Coseno / Pearson:**
-- ✅ > 0.9: Forma prácticamente idéntica  
-- 🟡 0.7–0.9: Forma parecida  
-- 🔴 < 0.7: Forma distinta o alterada
+**Similitud de Coseno:**
+- ✅ > 0.7: Forma muy similar  
+- 🟡 0.5–0.7: Forma parecida  
+- 🔴 < 0.5: Forma distinta o alterada
+
+**Pearson:**
+- ✅ > 0.65: Correlación alta  
+- 🟡 0.4–0.65: Correlación media  
+- 🔴 < 0.4: Baja correlación
 
 **AUC (Diferencia de área bajo la curva):**
-- ✅ < 0.05: Prácticamente igual  
-- 🟡 0.05–0.1: Leve diferencia  
-- 🔴 > 0.1: Diferencia significativa
+- ✅ < 10: Prácticamente igual  
+- 🟡 10–25: Leve diferencia  
+- 🔴 > 25: Diferencia significativa
 
 **MAE (Error Absoluto Medio):**
-- ✅ < 0.01: Muy bajo  
-- 🟡 0.01–0.03: Tolerable  
-- 🔴 > 0.03: Alto
+- ✅ < 0.06: Muy bajo  
+- 🟡 0.06–0.08: Tolerable  
+- 🔴 > 0.08: Alto
 """, unsafe_allow_html=True)
 
 else:
