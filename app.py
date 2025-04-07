@@ -8,6 +8,7 @@ from scipy.signal import savgol_filter
 from scipy.spatial import ConvexHull
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import datetime
+import pickle
 
 st.set_page_config(page_title="Análisis NIR - Laboratorio Metalúrgico", layout="wide")
 st.title("🔬 Análisis de resultados por Espectroscopía NIR")
@@ -44,6 +45,15 @@ def normalize_convex_hull(wavelengths, spectrum):
 
 def min_max_scale(spectrum):
     return (spectrum - np.min(spectrum)) / (np.max(spectrum) - np.min(spectrum))
+
+def auc_difference(a, b):
+    return abs(np.trapz(a) - np.trapz(b))
+
+def mean_absolute_error(a, b):
+    return np.mean(np.abs(np.array(a) - np.array(b)))
+
+def pearson_corr(a, b):
+    return np.corrcoef(a, b)[0, 1]
 
 # === Subida de archivos ===
 actualizar = st.sidebar.button("🔁 Actualizar resultados")
@@ -86,89 +96,59 @@ if uploaded_files and actualizar:
 
     patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
 
-    # === Gráfico ===
-    st.markdown("### 📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(5, 2.5))
-    ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
-    for s in spectra_data:
-        if s["nombre"] != patron["nombre"]:
-            ax.plot(wavelengths, s["minmax"], label=s["nombre"])
-    ax.set_xlabel("Longitud de onda (nm)", fontsize=8)
-    ax.set_ylabel("Reflectancia (0-1)", fontsize=8)
-    ax.set_title("Espectros NIR normalizados", fontsize=9)
-    ax.legend(fontsize=6)
-    ax.grid(True)
-    ax.tick_params(labelsize=6)
-    st.pyplot(fig)
-
-    # === Tabla resumen de espectros ===
-    st.markdown("### 📋 Tabla resumen de archivos cargados")
-    df_resumen = pd.DataFrame([
-        {
-            "Archivo": s["nombre"],
-            "# Puntos espectrales": s["num_puntos"],
-            "Long. de onda inicial (nm)": s["inicio"],
-            "Long. de onda final (nm)": s["final"],
-            "Rango espectral (nm)": s["rango"],
-            "Resolución estimada (nm/punto)": s["resolucion"]
-        } for s in spectra_data
-    ])
-    st.dataframe(df_resumen.style.set_properties(**{'text-align': 'center'}).set_table_styles([
-        {'selector': 'th', 'props': [('text-align', 'center')]}
-    ]), use_container_width=True)
-
     # === Cálculo ===
     distancias = []
     similitudes = []
+    pearsons = []
+    aucs = []
+    maes = []
     interpretaciones = []
 
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
             d = np.linalg.norm(patron["suavizado"] - s["suavizado"])
             c = cosine_similarity([patron["suavizado"]], [s["suavizado"]])[0][0]
-            texto = f"Distancia: {d:.2f} | Coseno: {c:.3f}"
+            p = pearson_corr(patron["suavizado"], s["suavizado"])
+            a = auc_difference(patron["suavizado"], s["suavizado"])
+            m = mean_absolute_error(patron["suavizado"], s["suavizado"])
+
+            texto = f"Distancia: {d:.2f} | Coseno: {c:.3f} | Pearson: {p:.3f} | AUC: {a:.3f} | MAE: {m:.4f}"
             distancias.append((s["nombre"], d))
             similitudes.append((s["nombre"], c))
+            pearsons.append((s["nombre"], p))
+            aucs.append((s["nombre"], a))
+            maes.append((s["nombre"], m))
             interpretaciones.append((s["nombre"], texto))
 
     df_export = pd.DataFrame({
         "Archivo": [x[0] for x in distancias],
         "Distancia Euclidiana": [x[1] for x in distancias],
         "Similitud de Coseno": [x[1] for x in similitudes],
+        "Correlación Pearson": [x[1] for x in pearsons],
+        "Diferencia AUC": [x[1] for x in aucs],
+        "Error Absoluto Medio": [x[1] for x in maes],
         "Interpretación": [x[1] for x in interpretaciones]
     })
 
     st.markdown("### 📏 Distancia Euclidiana respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]].style.set_properties(**{'text-align': 'center'}).set_table_styles([
-        {'selector': 'th', 'props': [('text-align', 'center')]}
-    ]), use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]])
 
     st.markdown("### 📐 Similitud de Coseno respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]].style.set_properties(**{'text-align': 'center'}).set_table_styles([
-        {'selector': 'th', 'props': [('text-align', 'center')]}
-    ]), use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]])
+
+    st.markdown("### 🔁 Correlación de Pearson")
+    st.dataframe(df_export[["Archivo", "Correlación Pearson"]])
+
+    st.markdown("### 🧮 Diferencia de Área bajo la Curva (AUC)")
+    st.dataframe(df_export[["Archivo", "Diferencia AUC"]])
+
+    st.markdown("### 📉 Error Absoluto Medio")
+    st.dataframe(df_export[["Archivo", "Error Absoluto Medio"]])
 
     st.markdown("### 🧠 Interpretación automática")
     for i in range(len(df_export)):
         archivo = df_export.iloc[i]["Archivo"]
-        dist = df_export.iloc[i]["Distancia Euclidiana"]
-        cos = df_export.iloc[i]["Similitud de Coseno"]
-
-        if dist < 3:
-            nivel_dist = "✅ Muy similar al patrón"
-        elif dist < 6:
-            nivel_dist = "🟡 Moderadamente diferente"
-        else:
-            nivel_dist = "🔴 Muy diferente"
-
-        if cos > 0.9:
-            nivel_cos = "✅ Forma prácticamente idéntica"
-        elif cos > 0.7:
-            nivel_cos = "🟡 Forma parecida"
-        else:
-            nivel_cos = "🔴 Forma distinta o alterada"
-
-        st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
+        st.markdown(f"**{archivo}** → {df_export.iloc[i]['Interpretación']}")
 
     st.markdown("""
 ---
@@ -176,6 +156,9 @@ if uploaded_files and actualizar:
 <ul>
 <li><b>Distancia Euclidiana &gt; 6</b>: Considerar acción correctiva.</li>
 <li><b>Similitud de Coseno &lt; 0.5</b>: Indica un cambio significativo en la forma del espectro.</li>
+<li><b>Correlación de Pearson &lt; 0.7</b>: Señal de variación significativa en el comportamiento espectral.</li>
+<li><b>Diferencia de AUC &gt; 0.1</b>: Puede reflejar cambios en concentración o pureza.</li>
+<li><b>Error Absoluto Medio &gt; 0.03</b>: Diferencias distribuidas a lo largo del espectro.</li>
 <li><b>Revisar condiciones</b> de muestreo, dilución o contaminación del reactivo.</li>
 </ul>
 
@@ -183,14 +166,32 @@ if uploaded_files and actualizar:
 <b>Distancia Euclidiana:</b>
 <ul>
 <li>&lt; 3 : Muy similar al patrón</li>
-<li>3-6 : Moderadamente diferente</li>
+<li>3–6 : Moderadamente diferente</li>
 <li>&gt; 6 : Diferencia significativa</li>
 </ul>
 <b>Similitud de Coseno:</b>
 <ul>
 <li>&gt; 0.9 : Forma prácticamente idéntica</li>
-<li>0.7-0.9 : Forma parecida</li>
+<li>0.7–0.9 : Forma parecida</li>
 <li>&lt; 0.7 : Forma distinta o alterada</li>
+</ul>
+<b>Correlación de Pearson:</b>
+<ul>
+<li>&gt; 0.9 : Muy alta correlación</li>
+<li>0.7–0.9 : Correlación moderada</li>
+<li>&lt; 0.7 : Baja correlación</li>
+</ul>
+<b>Diferencia de AUC:</b>
+<ul>
+<li>&lt; 0.05 : Muy similares en área</li>
+<li>0.05–0.1 : Ligeramente diferentes</li>
+<li>&gt; 0.1 : Diferencia notable en contenido</li>
+</ul>
+<b>Error Absoluto Medio:</b>
+<ul>
+<li>&lt; 0.01 : Diferencia mínima</li>
+<li>0.01–0.03 : Diferencia moderada</li>
+<li>&gt; 0.03 : Diferencia significativa</li>
 </ul>
 """, unsafe_allow_html=True)
 
