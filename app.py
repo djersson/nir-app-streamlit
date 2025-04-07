@@ -173,25 +173,23 @@ if uploaded_files and actualizar:
         st.markdown(f"**{archivo}** → Distancia: {dist:.2f} {nivel_dist} | Coseno: {cos:.3f} {nivel_cos}")
 
     st.markdown("""
-    ---
-    ```
-    ==== RECOMENDACIONES ====
-    - Si la distancia euclidiana > 6, considerar acción correctiva.
-    - Si la similitud de coseno < 0.5, la forma del espectro cambió significativamente.
-    - Revisar condiciones de muestreo, dilución o contaminación del reactivo.
+---
+### ✅ Recomendaciones
+- **Distancia Euclidiana > 6**: Considerar acción correctiva.
+- **Similitud de Coseno < 0.5**: Indica un cambio significativo en la forma del espectro.
+- **Revisar condiciones** de muestreo, dilución o contaminación del reactivo.
 
-    ==== LEYENDA PARA INTERPRETACIÓN ====
+### 🧾 Leyenda para interpretación
+**Distancia Euclidiana**:
+- < 3 : Muy similar al patrón
+- 3–6 : Moderadamente diferente
+- > 6 : Diferencia significativa
 
-    Distancia Euclidiana:
-    - < 3 : Muy similar al patrón
-    - 3–6 : Moderadamente diferente
-    - > 6 : Diferencia significativa
-
-    Similitud de Coseno:
-    - > 0.9 : Forma prácticamente idéntica
-    - 0.7–0.9 : Forma parecida
-    - < 0.7 : Forma distinta o alterada
-    ```""")
+**Similitud de Coseno**:
+- > 0.9 : Forma prácticamente idéntica
+- 0.7–0.9 : Forma parecida
+- < 0.7 : Forma distinta o alterada
+""")
 else:
     st.info("Sube archivos .asd para procesarlos.")
 
