@@ -84,16 +84,17 @@ if uploaded_files and actualizar:
 
     # === Gráfico ===
     st.subheader("📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(5, 2.3))
+    fig, ax = plt.subplots(figsize=(4.5, 2))
     ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=2)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
             ax.plot(wavelengths, s["minmax"], label=s["nombre"])
-    ax.set_xlabel("Longitud de onda (nm)")
-    ax.set_ylabel("Reflectancia (0-1)")
-    ax.set_title("Espectros NIR normalizados")
-    ax.legend()
+    ax.set_xlabel("Longitud de onda (nm)", fontsize=9)
+    ax.set_ylabel("Reflectancia (0-1)", fontsize=9)
+    ax.set_title("Espectros NIR normalizados", fontsize=10)
+    ax.legend(fontsize=8)
     ax.grid(True)
+    ax.tick_params(labelsize=8)
     st.pyplot(fig)
 
     # === Tabla resumen de espectros ===
