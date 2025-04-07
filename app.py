@@ -96,9 +96,9 @@ if uploaded_files and actualizar:
     ax.set_xlabel("Longitud de onda (nm)", fontsize=7)
     ax.set_ylabel("Reflectancia (0-1)", fontsize=7)
     ax.set_title("Espectros NIR normalizados", fontsize=8)
-    ax.legend(fontsize=6)
+    ax.legend(fontsize=4)
     ax.grid(True)
-    ax.tick_params(labelsize=8)
+    ax.tick_params(labelsize=6)
     st.pyplot(fig)
 
     # === Tabla resumen de espectros ===
