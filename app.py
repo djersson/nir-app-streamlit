@@ -87,8 +87,8 @@ if uploaded_files and actualizar:
     patron = next(s for s in spectra_data if s["nombre"] == nombre_patron)
 
     # === Gráfico ===
-    st.subheader("📈 Comparación de espectros normalizados")
-    fig, ax = plt.subplots(figsize=(6, 3))
+    st.markdown("### 📈 Comparación de espectros normalizados")
+    fig, ax = plt.subplots(figsize=(5, 2.5))
     ax.plot(wavelengths, patron["minmax"], label=f"PATRÓN: {patron['nombre']}", linewidth=1.5)
     for s in spectra_data:
         if s["nombre"] != patron["nombre"]:
@@ -113,11 +113,9 @@ if uploaded_files and actualizar:
             "Resolución estimada (nm/punto)": s["resolucion"]
         } for s in spectra_data
     ])
-    st.dataframe(df_resumen.style.set_table_styles([{
-        'selector': 'td', 'props': [('text-align', 'center')]
-    }, {
-        'selector': 'th', 'props': [('text-align', 'center')]
-    }]), use_container_width=True)
+    st.dataframe(df_resumen.style.set_properties(**{'text-align': 'center'}).set_table_styles([
+        {'selector': 'th', 'props': [('text-align', 'center')]}
+    ]), use_container_width=True)
 
     # === Cálculo ===
     distancias = []
@@ -141,18 +139,14 @@ if uploaded_files and actualizar:
     })
 
     st.markdown("### 📏 Distancia Euclidiana respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]].style.set_table_styles([{
-        'selector': 'td', 'props': [('text-align', 'center')]
-    }, {
-        'selector': 'th', 'props': [('text-align', 'center')]
-    }]), use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Distancia Euclidiana"]].style.set_properties(**{'text-align': 'center'}).set_table_styles([
+        {'selector': 'th', 'props': [('text-align', 'center')]}
+    ]), use_container_width=True)
 
     st.markdown("### 📐 Similitud de Coseno respecto al Patrón")
-    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]].style.set_table_styles([{
-        'selector': 'td', 'props': [('text-align', 'center')]
-    }, {
-        'selector': 'th', 'props': [('text-align', 'center')]
-    }]), use_container_width=True)
+    st.dataframe(df_export[["Archivo", "Similitud de Coseno"]].style.set_properties(**{'text-align': 'center'}).set_table_styles([
+        {'selector': 'th', 'props': [('text-align', 'center')]}
+    ]), use_container_width=True)
 
     st.markdown("### 🧠 Interpretación automática")
     for i in range(len(df_export)):
